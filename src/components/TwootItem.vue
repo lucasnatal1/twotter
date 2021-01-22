@@ -1,8 +1,10 @@
 <template>
-  <div class="twoot-item" @click="favoriteTwoot(twoot.id)">
+  <div class="twoot-item">
     <div class="user-profile__twoot">
       <div class="twoot-item__user">@{{ username }}</div>
-      <div class="twoot-item__content">{{ twoot.content }}</div>
+      <div class="twoot-item__content">
+        {{ twoot.content }}
+      </div>
     </div>
   </div>
 </template>
@@ -13,23 +15,17 @@ export default {
   props: {
     username: {
       type: String,
-      required: true
+      required: true,
     },
     twoot: {
       type: Object,
-      required: true
+      required: true,
     },
   },
-  methods: {
-    favoriteTwoot(id) {
-      this.$emit('favorite', id);  //create a @ event in the parent (check out UserProfile in the TwooItem tag)
-    }
-  }
 };
 </script>
 
 <style lang="scss" scoped>
-
 .twoot-item {
   padding: 20px;
   background-color: white;
@@ -40,22 +36,15 @@ export default {
   transition: all 0.25s ease;
 
   &:hover {
-  transform: scale(1.07, 1.07);
+    transform: scale(1.07, 1.07);
   }
 
   .twoot-item__content {
-  font-family: Segoe UI;
+    font-family: Segoe UI;
   }
 
   .twoot-item__user {
-  font-weight: bold;
-  margin: 0 0 3px 0;
+    font-weight: bold;
   }
 }
-
-
-
-
-
-
 </style>
