@@ -2,19 +2,19 @@
   <div class="user-profile">
     <div class="user-profile__sidebar">
       <div class="user-profile__user-panel">
-        <h1 class="user-profile__username">@{{ user.username }}</h1>
-        <div class="user-profile__admin-badge" v-if="user.isAdmin">Admin</div>
+        <h1 class="user-profile__username">@{{ state.user.username }}</h1>
+        <div class="user-profile__admin-badge" v-if="state.user.isAdmin">Admin</div>
         <div class="user-profile__follower-count">
-          <strong>Followers: </strong> {{ followers }}
+          <strong>Followers: </strong> {{ state.followers }}
         </div>
       </div>
       <CreateTwootPanel @add-twoot="addTwoot" />
     </div>
     <div class="user-profile__twoots-wrapper">
       <TwootItem
-        v-for="twoot in user.twoots"
+        v-for="twoot in state.user.twoots"
         :key="twoot.id"
-        :username="user.username"
+        :username="state.user.username"
         :twoot="twoot"
         @favorite="toggleFavorite"
       />
@@ -23,14 +23,23 @@
 </template>
 
 <script>
-import TwootItem from "./TwootItem";
-import CreateTwootPanel from "./CreateTwootPanel";
+//@ is an alias for /src
+import { reactive, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { users } from '@/assets/users.js'
+import TwootItem from "@/components/TwootItem";
+import CreateTwootPanel from "@/components/CreateTwootPanel";
 
 export default {
   name: "UserProfile",
   components: { CreateTwootPanel, TwootItem },
-  data() {
-    return {
+  setup() {
+    const route = useRoute();
+    const userId = computed(() => route.params.userId);
+
+    //if(userId) fetchUserFromApi(userId)      [real life use]
+
+    const state = reactive({
       newTwootContent: "",
       selectedTwootType: "instant",
       twootTypes: [
@@ -38,32 +47,27 @@ export default {
         { value: "instant", name: "Instant Twoot" },
       ],
       followers: 0,
-      user: {
-        id: 1,
-        username: "_LuanaCSM",
-        firstName: "Luana",
-        lastName: "Marques",
-        email: "luanacsmarques@gmail.com",
-        isAdmin: true,
-        twoots: [
-          { id: 1, content: "Twotter is Brabo!" },
-          { id: 2, content: "Dou uns pega em Natal" },
-        ],
-      },
-    };
-  },
-  methods: {
-    //functions to call yourself
-    toggleFavorite(id) {
+      user:  users[userId.value - 1] || users[0]
+    })
+
+    function toggleFavorite(id) {
       console.log(`Favorite twoot #${id}`);
-    },
-    addTwoot(twoot) {
-      this.user.twoots.unshift({
-        id: this.user.twoots.length + 1,
+    }
+
+    function addTwoot(twoot) {
+      state.user.twoots.unshift({
+        id: state.user.twoots.length + 1,
         content: twoot,
       });
-    },
-  },
+    }
+
+    return {
+      state,
+      toggleFavorite,
+      addTwoot,
+      userId
+    }
+  }
 };
 </script>
 

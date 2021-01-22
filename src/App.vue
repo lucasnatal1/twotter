@@ -1,26 +1,29 @@
 <template>
   <div id="app">
     <nav>
-      <div class="navigation__logo">Twotter</div>
-      <div class="navigation__user">
+      <router-link to="/">
+        <div class="navigation__logo">Twotter</div>
+      </router-link>
+      <div class="navigation__user" v-if="user">
         {{ user.username }}
       </div>
     </nav>
-    <UserProfile />
+    <router-view />
   </div>
 </template>
 
 <script>
-import UserProfile from "./components/UserProfile";
+import { useStore } from "vuex";
+import { computed } from "vue";
 
 export default {
   name: "App",
-  components: { UserProfile },
-  data() {
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.state.User.user);
+
     return {
-      user: {
-        username: "_LuanaCSM",
-      },
+      user,
     };
   },
 };
@@ -39,17 +42,19 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 5%;
+    padding: 10px 2% 10px 5%;
     background-color: deeppink;
     color: white;
 
     .navigation__logo {
-      font-weight: bold;
+      font-weight: 400;
       font-size: 24px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .navigation__user {
-      font-weight: bold;
+      font-weight: 300;
+      font-size: 14px;
     }
   }
 }
